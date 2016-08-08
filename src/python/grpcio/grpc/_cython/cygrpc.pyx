@@ -32,6 +32,7 @@ cimport cpython
 import pkg_resources
 import os.path
 import sys
+import platform
 
 # TODO(atash): figure out why the coverage tool gets confused about the Cython
 # coverage plugin when the following files don't have a '.pxi' suffix.
@@ -59,8 +60,9 @@ def _initialize():
   grpc_set_ssl_roots_override_callback(
           <grpc_ssl_roots_override_callback>ssl_roots_override_callback)
 
-  if Py_AtExit(grpc_shutdown) != 0:
-    raise ImportError('failed to register gRPC library shutdown callbacks')
-
+  # if Py_AtExit(grpc_shutdown) != 0:
+  #   raise ImportError('failed to register gRPC library shutdown callbacks')
+  if platform.python_implementation() != "PyPy":
+    Py_AtExit(grpc_shutdown)
 
 _initialize()
