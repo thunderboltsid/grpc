@@ -80,6 +80,7 @@ RUN pip install futures==2.2.0 enum34==1.0.4 protobuf==3.0.0a2 six==1.10.0
 
 # Install dependencies for pyenv
 RUN apt-get update && apt-get install -y \
+  sudo \
   libbz2-dev \
   libncurses5-dev \
   libncursesw5-dev \
@@ -90,9 +91,15 @@ RUN apt-get update && apt-get install -y \
   mercurial \
   zlib1g-dev && apt-get clean
 
+
+WORKDIR /home/root
+
+ENV HOME  /home/root
+ENV PYENV_ROOT $HOME/.pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
 # Install Pyenv and dev Python versions 3.5 and 3.6
-RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
-RUN pyenv update
+RUN git clone git://github.com/yyuu/pyenv.git .pyenv
 RUN pyenv install 3.5-dev
 RUN pyenv install 3.6-dev
 RUN pyenv install pypy-5.3.1
